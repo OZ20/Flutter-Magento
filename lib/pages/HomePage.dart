@@ -1,32 +1,17 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:magentorx/model/product.dart';
+import 'package:magentorx/model/products_repository.dart';
+import 'package:magentorx/utils/supplemental/asymmetric_view.dart';
 
-class Homepage extends StatefulWidget{
+class HomePage extends StatelessWidget {
+  final Category category;
 
-
-  @override
-  State createState() {
-    return _Homepage();
-  }
-}
-
-class _Homepage extends State<Homepage>{
+  const HomePage({this.category: Category.all});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Homepage"),
-      ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("Succesfully Login"),
-          ],
-        ),
-      ),
-    );
+    return AsymmetricView(products: ProductsRepository.loadProducts(category));
   }
 }

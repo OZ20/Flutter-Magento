@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:magentorx/pages/LoginScreen.dart';
+import 'package:magentorx/pages/AppPage.dart';
+
+import 'package:magentorx/pages/HomePage.dart';
+import 'package:magentorx/pages/LoginPage.dart';
+import 'package:magentorx/utils/Theme.dart';
 
 void main() => runApp(new MyApp());
 
@@ -9,18 +13,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Flutter Demo',
-      theme: new ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
-        // counter didn't reset back to zero; the application is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: new LoginScreen(),
+      theme: AppTheme.getTheme(),
+      home: new LoginPage(),
+      routes: <String,WidgetBuilder>{
+        "/login" : (context) => new LoginPage(),
+        "/home" : (context) => new HomePage(),
+        "/app" : (context) =>  new AppPage(),
+      },
     );
   }
 }
