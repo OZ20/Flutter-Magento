@@ -9,8 +9,17 @@ class GetProduct {
   final token;
   final query;
 
-  getProduct(){
-    http.get("http://magento.jomsoft.com/");
+  final baseUri = "http://magento.jomsoft.com/rest";
+
+  Future getProduct()async{
+    print(token);
+    var response = await http.get("$baseUri/V1/products",headers: <String,String>{
+      "Authorization" : "Bearer $token",
+      "Accept" : "application/json",
+      "Content-Type" : "application/json"
+    });
+
+    return response.body;
   }
 
 }

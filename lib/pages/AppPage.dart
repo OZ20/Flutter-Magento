@@ -5,8 +5,10 @@ import 'package:magentorx/model/product.dart';
 import 'package:magentorx/pages/HomePage.dart';
 import 'package:magentorx/pages/LoginPage.dart';
 import 'package:magentorx/utils/Theme.dart';
+import 'package:magentorx/utils/api/GetProduct.dart';
 import 'package:magentorx/widgets/CategoryMenu.dart';
 import 'package:magentorx/widgets/BackDrop.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -17,6 +19,19 @@ class AppPage extends StatefulWidget {
 
 class _AppPageState extends State<AppPage> {
   Category _currentCategory = Category.all;
+
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData()async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var token = pref.get("TOKEN");
+    GetProduct(token: token).getProduct().then((res) => print(res));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +57,11 @@ class _AppPageState extends State<AppPage> {
     setState(() {
       _currentCategory = category;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
 
