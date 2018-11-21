@@ -12,8 +12,7 @@ class GetProduct {
   final baseUri = "http://magento.jomsoft.com/rest";
 
   Future getProduct()async{
-    print(token);
-    var response = await http.get("$baseUri/V1/products",headers: <String,String>{
+    var response = await http.get("$baseUri/V1/products/:sku",headers: <String,String>{
       "Authorization" : "Bearer $token",
       "Accept" : "application/json",
       "Content-Type" : "application/json"
