@@ -26,8 +26,6 @@ class _AppPageState extends State<AppPage> {
   getData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var token = pref.get("TOKEN");
-    GetProduct(token: token)
-        .getCategories().then((res) => CategoryModel.fromJson(res)).then((res) => res.childrenData).then((res) => print(res.length));
     GetProduct(token: token).getProduct().then((res) => print(res));
   }
 
