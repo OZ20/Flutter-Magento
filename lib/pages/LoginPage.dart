@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:magentorx/pages/HomePage.dart';
 import 'package:magentorx/utils/api/AuthToken.dart';
 import 'package:magentorx/utils/colour/colors.dart';
 
@@ -106,9 +105,10 @@ class _LoginPageState extends State<LoginPage> {
   _handleLogin(Map data) async {
     pref = await _pref;
     if (data["statuscode"] == 200) {
+      print(data["response"]);
       pref
           .setString("TOKEN", data["response"])
-          .whenComplete(() => Navigator.pushReplacementNamed(context, "/app"));
+          .whenComplete(() => Navigator.pop(context));
       print("You're good to go");
     } else
       print("How dare you trying to trespass the login");

@@ -25,9 +25,13 @@ dependencies:
   shared_preferences: any
   intl: any
   shrine_images: any
+  json_annotation: any
 
 
 dev_dependencies:
+
+  json_serializable: any
+  build_runner: any
   flutter_test:
     sdk: flutter
 
