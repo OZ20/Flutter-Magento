@@ -26,7 +26,28 @@ class _AppPageState extends State<AppPage> {
   getData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var token = pref.get("TOKEN");
+    GetProduct(token: token).getCategories().then((res) => CategoryModel.fromJson(res)).then((data) => data.childrenData.forEach(_handleChild));
     GetProduct(token: token).getProduct().then((res) => print(res));
+  }
+
+  _handleChild(CategoryModel data){
+    if(data.childrenData.isNotEmpty){
+      print(data.cName);
+      print(data.level);
+      data.childrenData.forEach((model) {
+        if(model.childrenData.isNotEmpty){
+          print(data.cName);
+          print(data.level);
+          _handleChild(model);
+        }else{
+          print(model.cName);
+          print(data.level);
+        }
+      });
+    }else {
+      print(data.cName);
+      print(data.level);
+    }
   }
 
   @override
