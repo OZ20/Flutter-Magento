@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:magentorx/model/product.dart';
+import 'package:magentorx/model/Product.dart';
+import 'package:magentorx/model/productpast.dart';
 import 'package:magentorx/pages/HomePage.dart';
 import 'package:magentorx/pages/LoginPage.dart';
 import 'package:magentorx/utils/Theme.dart';
@@ -15,7 +18,8 @@ class AppPage extends StatefulWidget {
 }
 
 class _AppPageState extends State<AppPage> {
-  Category _currentCategory = Category.all;
+  CategoryModel _currentCategory;
+  List<CategoryModel> _categoryList = [];
 
   @override
   void initState() {
@@ -26,29 +30,33 @@ class _AppPageState extends State<AppPage> {
   getData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var token = pref.get("TOKEN");
-    GetProduct(token: token).getCategories().then((res) => CategoryModel.fromJson(res)).then((data) => data.childrenData.forEach(_handleChild));
-    GetProduct(token: token).getProduct().then((res) => print(res));
+    GetProduct(token: token).getCategories().then((res) => _handleCategory(CategoryModel.fromJson(res)));
+    GetProduct(token: token).getProduct().then((res) => res["items"]).then((item) => item.forEach((data) => _handleProduct(Product.fromJson(data))));
   }
 
-  _handleChild(CategoryModel data){
-    if(data.childrenData.isNotEmpty){
-      print(data.cName);
-      print(data.level);
-      data.childrenData.forEach((model) {
-        if(model.childrenData.isNotEmpty){
-          print(data.cName);
-          print(data.level);
-          _handleChild(model);
-        }else{
-          print(model.cName);
-          print(data.level);
-        }
-      });
-    }else {
-      print(data.cName);
-      print(data.level);
-    }
+  _handleCategory(CategoryModel model){
+//    print(model.cName);
+//    model.childrenData.forEach((data) {
+//      if(data.childrenData.isNotEmpty){
+//        _handleCategory(data);
+//      }else
+//        print(" " + data.cName);
+//    });
+    setState(() {
+      _categoryList = model.childrenData;
+    });
+   return model.childrenData.forEach((category) => print(category.cName));
   }
+
+  _handleProduct(Product product){
+    print(product.name + " " + product.sku );
+    product.customAttributes.forEach((data){
+      if(data.attributeCode == "image")
+        print(data.value);
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +64,9 @@ class _AppPageState extends State<AppPage> {
       title: "JShop",
       home: Backdrop(
         currentCategory: _currentCategory,
-        frontLayer: HomePage(category: _currentCategory),
+        frontLayer: HomePage(),
         backLayer: CategoryMenuPage(
+          categories: _categoryList,
           currentCategory: _currentCategory,
           onCategoryTap: _onCategoryTap,
         ),
@@ -70,7 +79,7 @@ class _AppPageState extends State<AppPage> {
   }
 
   /// Function to call when a [Category] is tapped.
-  void _onCategoryTap(Category category) {
+  void _onCategoryTap(CategoryModel category) {
     setState(() {
       _currentCategory = category;
     });

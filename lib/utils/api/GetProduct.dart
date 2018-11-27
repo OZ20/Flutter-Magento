@@ -10,7 +10,8 @@ class GetProduct {
 
   final token;
   final query;
-  final baseUri = "http://magento.jomsoft.com/rest/all";
+  final imageUri = "http://magento.jomsoft.com/pub/media/catalog/product";
+  final baseUri = "http://magento.jomsoft.com/rest";
 
   Future getProduct()async{
     var uri = Uri.encodeFull("$baseUri/V1/products?searchCriteria[pageSize]=30");

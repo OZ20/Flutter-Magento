@@ -14,7 +14,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:magentorx/model/product.dart';
+import 'package:magentorx/model/productpast.dart';
 import 'package:intl/intl.dart';
 
 class ProductCard extends StatelessWidget {
@@ -22,7 +22,7 @@ class ProductCard extends StatelessWidget {
       : assert(imageAspectRatio == null || imageAspectRatio > 0);
 
   final double imageAspectRatio;
-  final Product product;
+  final ProductPast product;
 
   static final kTextBoxHeight = 65.0;
 

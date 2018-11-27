@@ -14,11 +14,11 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:magentorx/model/product.dart';
+import 'package:magentorx/model/productpast.dart';
 import 'product_columns.dart';
 
 class AsymmetricView extends StatelessWidget {
-  final List<Product> products;
+  final List<ProductPast> products;
 
   AsymmetricView({Key key, this.products});
 

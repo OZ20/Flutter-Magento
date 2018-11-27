@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:magentorx/model/product.dart';
+import 'package:magentorx/model/productpast.dart';
 import 'package:magentorx/model/products_repository.dart';
 import 'package:magentorx/utils/supplemental/asymmetric_view.dart';
 

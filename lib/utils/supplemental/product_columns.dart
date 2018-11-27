@@ -14,7 +14,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:magentorx/model/product.dart';
+import 'package:magentorx/model/productpast.dart';
 import 'product_card.dart';
 
 class TwoProductCardColumn extends StatelessWidget {
@@ -23,7 +23,7 @@ class TwoProductCardColumn extends StatelessWidget {
     this.top,
   }) : assert(bottom != null);
 
-  final Product bottom, top;
+  final ProductPast bottom, top;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class TwoProductCardColumn extends StatelessWidget {
 class OneProductCardColumn extends StatelessWidget {
   OneProductCardColumn({this.product});
 
-  final Product product;
+  final ProductPast product;
 
   @override
   Widget build(BuildContext context) {
