@@ -1,20 +1,9 @@
-// Copyright 2018-present the Flutter authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:magentorx/model/productpast.dart';
+import 'package:magentorx/model/Product.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 class ProductCard extends StatelessWidget {
@@ -22,55 +11,71 @@ class ProductCard extends StatelessWidget {
       : assert(imageAspectRatio == null || imageAspectRatio > 0);
 
   final double imageAspectRatio;
-  final ProductPast product;
+  final Product product;
+  final imageUri = "http://magento.jomsoft.com/pub/media/catalog/product";
 
   static final kTextBoxHeight = 65.0;
 
+  String customAttribute(){
+    var lists = product.customAttributes.map((attribute) => {
+      attribute.attributeCode:attribute.value
+    }).toList();
+    print(lists[0]["image"]);
+    String value = imageUri+lists[0]["image"];
+    return value;
+  }
+
   @override
   Widget build(BuildContext context) {
+    customAttribute();
     final NumberFormat formatter = NumberFormat.simpleCurrency(
         decimalDigits: 0, locale: Localizations.localeOf(context).toString());
     final ThemeData theme = Theme.of(context);
 
-    final imageWidget = Image.asset(
-      product.assetName,
-      package: product.assetPackage,
-      fit: BoxFit.cover,
+    Widget imageWidget = CachedNetworkImage(
+      imageUrl:customAttribute(),
+      fit: BoxFit.contain,
     );
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        AspectRatio(
-          aspectRatio: imageAspectRatio,
-          child: imageWidget,
-        ),
-        SizedBox(
-          height: kTextBoxHeight * MediaQuery.of(context).textScaleFactor,
-          width: 121.0,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              // TODO(larche): Make headline6 when available
-              Text(
-                product == null ? '' : product.name,
-                style: theme.textTheme.button,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+    return InkWell(
+      onTap: (){},
+      child: Card(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: imageAspectRatio,
+              child: imageWidget,
+            ),
+            SizedBox(
+              height: kTextBoxHeight * MediaQuery.of(context).textScaleFactor,
+              width: 121.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // TODO(larche): Make headline6 when available
+                  Text(
+                    product == null ? '' : product.name,
+                    style: theme.textTheme.button,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  SizedBox(height: 4.0),
+                  // TODO(larche): Make subtitle2 when available
+                  Text(
+                    product == null ? '' : formatter.format(product.price),
+                    style: theme.textTheme.caption,
+                  ),
+                  SizedBox(height: 10.0),
+                ],
               ),
-              SizedBox(height: 4.0),
-              // TODO(larche): Make subtitle2 when available
-              Text(
-                product == null ? '' : formatter.format(product.price),
-                style: theme.textTheme.caption,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

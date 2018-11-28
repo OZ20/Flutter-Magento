@@ -1,17 +1,18 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:magentorx/model/productpast.dart';
-import 'package:magentorx/model/products_repository.dart';
+import 'package:magentorx/model/Category.dart';
+import 'package:magentorx/model/Product.dart';
 import 'package:magentorx/utils/supplemental/asymmetric_view.dart';
 
 class HomePage extends StatelessWidget {
-  final Category category;
+  final CategoryModel category;
+  final List<Product> product;
 
-  const HomePage({this.category: Category.all});
+  const HomePage({this.category,this.product});
 
   @override
   Widget build(BuildContext context) {
-    return AsymmetricView(products: ProductsRepository.loadProducts(category));
+    return AsymmetricView(products: product);
   }
 }

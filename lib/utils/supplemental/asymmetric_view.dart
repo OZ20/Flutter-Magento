@@ -13,12 +13,11 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-
-import 'package:magentorx/model/productpast.dart';
+import 'package:magentorx/model/Product.dart';
 import 'product_columns.dart';
 
 class AsymmetricView extends StatelessWidget {
-  final List<ProductPast> products;
+  final List<Product> products;
 
   AsymmetricView({Key key, this.products});
 
@@ -38,21 +37,21 @@ class AsymmetricView extends StatelessWidget {
     return List.generate(_listItemCount(products.length), (int index) {
       double width = .59 * MediaQuery.of(context).size.width;
       Widget column;
-      if (index % 2 == 0) {
-        /// Even cases
-        int bottom = _evenCasesIndex(index);
-        column = TwoProductCardColumn(
-            bottom: products[bottom],
-            top: products.length - 1 >= bottom + 1
-                ? products[bottom + 1]
-                : null);
-        width += 32.0;
-      } else {
+//      if (index % 2 == 0) {
+//        /// Even cases
+//        int bottom = _evenCasesIndex(index);
+//        column = TwoProductCardColumn(
+//            bottom: products[bottom],
+//            top: products.length - 1 >= bottom + 1
+//                ? products[bottom + 1]
+//                : null);
+//        width += 32.0;
+//      } else {
         /// Odd cases
         column = OneProductCardColumn(
-          product: products[_oddCasesIndex(index)],
+          product: products[index],
         );
-      }
+//      }
       return Container(
         width: width,
         child: Padding(
@@ -87,6 +86,7 @@ class AsymmetricView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      shrinkWrap: false,
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.fromLTRB(0.0, 34.0, 16.0, 44.0),
       children: _buildColumns(context),

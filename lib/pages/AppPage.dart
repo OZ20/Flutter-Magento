@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:magentorx/model/Product.dart';
-import 'package:magentorx/model/productpast.dart';
 import 'package:magentorx/pages/HomePage.dart';
 import 'package:magentorx/pages/LoginPage.dart';
 import 'package:magentorx/utils/Theme.dart';
 import 'package:magentorx/utils/api/GetProduct.dart';
+import 'package:magentorx/utils/data/Data.dart';
 import 'package:magentorx/widgets/CategoryMenu.dart';
 import 'package:magentorx/widgets/BackDrop.dart';
 import 'package:magentorx/model/Category.dart';
@@ -19,44 +19,20 @@ class AppPage extends StatefulWidget {
 
 class _AppPageState extends State<AppPage> {
   CategoryModel _currentCategory;
-  List<CategoryModel> _categoryList = [];
+  List<CategoryModel> _categoryList = new List();
+  List<Product> _productList = new List();
+  final Data _data = new Data();
 
   @override
   void initState() {
     super.initState();
-    getData();
+    _gData();
   }
 
-  getData() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    var token = pref.get("TOKEN");
-    GetProduct(token: token).getCategories().then((res) => _handleCategory(CategoryModel.fromJson(res)));
-    GetProduct(token: token).getProduct().then((res) => res["items"]).then((item) => item.forEach((data) => _handleProduct(Product.fromJson(data))));
+  _gData() async {
+    _categoryList =
+        await _data.getCategory().whenComplete(() => setState(() {}));
   }
-
-  _handleCategory(CategoryModel model){
-//    print(model.cName);
-//    model.childrenData.forEach((data) {
-//      if(data.childrenData.isNotEmpty){
-//        _handleCategory(data);
-//      }else
-//        print(" " + data.cName);
-//    });
-    setState(() {
-      _categoryList = model.childrenData;
-    });
-   return model.childrenData.forEach((category) => print(category.cName));
-  }
-
-  _handleProduct(Product product){
-    print(product.name + " " + product.sku );
-    product.customAttributes.forEach((data){
-      if(data.attributeCode == "image")
-        print(data.value);
-    });
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +40,18 @@ class _AppPageState extends State<AppPage> {
       title: "JShop",
       home: Backdrop(
         currentCategory: _currentCategory,
-        frontLayer: HomePage(),
+        frontLayer: FutureBuilder(
+            future: _data.getProduct(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                return HomePage(product: snapshot.data);
+              } else {
+                return Center(
+                  child: Padding(padding: EdgeInsets.symmetric(horizontal:40.0),child: LinearProgressIndicator(),),
+                );
+              }
+            }),
         backLayer: CategoryMenuPage(
           categories: _categoryList,
           currentCategory: _currentCategory,

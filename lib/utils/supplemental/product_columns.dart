@@ -13,8 +13,7 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-
-import 'package:magentorx/model/productpast.dart';
+import 'package:magentorx/model/Product.dart';
 import 'product_card.dart';
 
 class TwoProductCardColumn extends StatelessWidget {
@@ -23,7 +22,7 @@ class TwoProductCardColumn extends StatelessWidget {
     this.top,
   }) : assert(bottom != null);
 
-  final ProductPast bottom, top;
+  final Product bottom, top;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +38,7 @@ class TwoProductCardColumn extends StatelessWidget {
               : 33 / 49;
 
           return ListView(
+            shrinkWrap: true,
             physics: ClampingScrollPhysics(),
             children: <Widget>[
               Padding(
@@ -69,11 +69,12 @@ class TwoProductCardColumn extends StatelessWidget {
 class OneProductCardColumn extends StatelessWidget {
   OneProductCardColumn({this.product});
 
-  final ProductPast product;
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
+      shrinkWrap: true,
       reverse: true,
       physics: ClampingScrollPhysics(),
       children: <Widget>[

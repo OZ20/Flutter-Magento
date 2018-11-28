@@ -41,8 +41,8 @@ class Product extends Object{
 class CustomAttributes extends Object{
 
   @JsonKey(name:"attribute_code")
-  final  attributeCode;
-  final  value;
+  final attributeCode;
+  final value;
 
   CustomAttributes({this.attributeCode, this.value});
 
