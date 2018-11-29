@@ -1,10 +1,9 @@
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:magentorx/model/Product.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
+import 'package:magentorx/pages/ProductDetailPage.dart';
 
 class ProductCard extends StatelessWidget {
   ProductCard({this.imageAspectRatio: 33 / 49, this.product})
@@ -17,10 +16,10 @@ class ProductCard extends StatelessWidget {
   static final kTextBoxHeight = 65.0;
 
   String customAttribute(){
+
     var lists = product.customAttributes.map((attribute) => {
       attribute.attributeCode:attribute.value
     }).toList();
-    print(lists[0]["image"]);
     String value = imageUri+lists[0]["image"];
     return value;
   }
@@ -38,7 +37,7 @@ class ProductCard extends StatelessWidget {
     );
 
     return InkWell(
-      onTap: (){},
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailPage(product: product,))),
       child: Card(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

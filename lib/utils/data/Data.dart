@@ -14,11 +14,11 @@ class Data {
 
   Future<List<Product>> getProduct({category})async{
     List<Product> _productList = new List();
-    await GetProduct()
+    await GetProduct(categoryId: category)
         .getProduct()
         .then((res) => res["items"])
         .then((item) =>
-            item.forEach((data) => _productList.add(Product.fromJson(data))));
+            item.forEach((data) => _productList.add(Product.fromJson(data)))).whenComplete(() => print("get product"));
     return _productList;
   }
 

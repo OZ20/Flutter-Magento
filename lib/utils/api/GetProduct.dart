@@ -6,20 +6,24 @@ import 'package:meta/meta.dart';
 
 class GetProduct {
 
-  GetProduct({this.token, this.query});
+  GetProduct({this.token, this.query, this.categoryId});
 
   final token;
   final query;
+  final categoryId;
   final baseUri = "http://magento.jomsoft.com/rest";
 
-  Future getProduct({category})async{
-    var uri = category == null?Uri.encodeFull("$baseUri/V1/products?searchCriteria[pageSize]=30"):Uri.encodeFull("$baseUri/V1/products?searchCriteria[pageSize]=30");
+  Future getProduct()async{
+    print(categoryId);
+    var uri = categoryId == null?Uri.encodeFull("$baseUri/V1/products?searchCriteria[pageSize]=30"):Uri.encodeFull("$baseUri/V1/products?searchCriteria[filterGroups][0][filters][0][field]=category_id&"
+        "searchCriteria[filterGroups][0][filters][0][value]=$categoryId&"
+        "searchCriteria[filterGroups][0][filters][0][conditionType]=eq&"
+        "searchCriteria[pageSize]=30");
     var response = await http.get(uri,headers: <String,String>{
       "Authorization" : "Bearer $token",
       "Accept" : "application/json",
       "Content-Type" : "application/json"
     },);
-
     return jsonDecode(response.body);
   }
 
