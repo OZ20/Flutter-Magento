@@ -5,7 +5,6 @@ import 'package:magentorx/model/Product.dart';
 import 'package:magentorx/pages/HomePage.dart';
 import 'package:magentorx/pages/LoginPage.dart';
 import 'package:magentorx/utils/Theme.dart';
-import 'package:magentorx/utils/api/GetProduct.dart';
 import 'package:magentorx/utils/data/Data.dart';
 import 'package:magentorx/widgets/CategoryMenu.dart';
 import 'package:magentorx/widgets/BackDrop.dart';
@@ -22,6 +21,7 @@ class _AppPageState extends State<AppPage> {
   CategoryModel _currentCategory;
   List<CategoryModel> _categoryList = new List();
   List<Product> _productList = new List();
+  SharedPreferences _pref;
 
   final PublishSubject<List<Product>> _dataStream = new PublishSubject();
   final Data _data = new Data();
@@ -34,6 +34,7 @@ class _AppPageState extends State<AppPage> {
   }
 
   _gData() async {
+    _pref = await SharedPreferences.getInstance()..get("TOKEN");
     _categoryList =
         await _data.getCategory().whenComplete(() => setState(() {}));
 

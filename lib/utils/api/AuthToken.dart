@@ -30,6 +30,6 @@ class AuthToken {
           "username": username,
           "password": password,
         }));
-    return {"statuscode": response.statusCode, "response": response.body};
+    return {"statuscode": response.statusCode, "response": json.decode(response.body)};
   }
 }

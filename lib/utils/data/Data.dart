@@ -18,7 +18,7 @@ class Data {
         .getProduct()
         .then((res) => res["items"])
         .then((item) =>
-            item.forEach((data) => _productList.add(Product.fromJson(data)))).whenComplete(() => print("get product"));
+            item.forEach((data) => _productList.add(Product.fromJson(data))));
     return _productList;
   }
 

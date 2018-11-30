@@ -14,8 +14,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:magentorx/model/Category.dart';
+import 'package:magentorx/pages/AddToCardPage.dart';
 import 'package:meta/meta.dart';
 import 'package:magentorx/pages/LoginPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const double _kFlingVelocity = 2.0;
 
@@ -89,12 +91,14 @@ class _BackdropTitle extends AnimatedWidget {
               child: ImageIcon(AssetImage('assets/slanted_menu.png')),
             ),
             FractionalTranslation(
-              translation: Tween<Offset>(
-                begin: Offset.zero,
-                end: Offset(1.0, 0.0),
-              ).evaluate(animation),
-              child: ImageIcon(AssetImage("assets/diamond.png"),)
-            )]),
+                translation: Tween<Offset>(
+                  begin: Offset.zero,
+                  end: Offset(1.0, 0.0),
+                ).evaluate(animation),
+                child: ImageIcon(
+                  AssetImage("assets/diamond.png"),
+                ))
+          ]),
         ),
       ),
       // Here, we do a custom cross fade between backTitle and frontTitle.
@@ -113,8 +117,7 @@ class _BackdropTitle extends AnimatedWidget {
               ).evaluate(animation),
               child: Semantics(
                   label: 'hide categories menu',
-                  child: ExcludeSemantics(child: backTitle)
-              ),
+                  child: ExcludeSemantics(child: backTitle)),
             ),
           ),
           Opacity(
@@ -129,11 +132,11 @@ class _BackdropTitle extends AnimatedWidget {
               ).evaluate(animation),
               child: Semantics(
                   label: 'show categories menu',
-                  child: ExcludeSemantics(child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal:10.0),
+                  child: ExcludeSemantics(
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: frontTitle,
-                  ))
-              ),
+                  ))),
             ),
           ),
         ],
@@ -176,6 +179,7 @@ class _BackdropState extends State<Backdrop>
     with SingleTickerProviderStateMixin {
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
   AnimationController _controller;
+  SharedPreferences _pref;
 
   @override
   void initState() {
@@ -185,7 +189,10 @@ class _BackdropState extends State<Backdrop>
       value: 1.0,
       vsync: this,
     );
+    _initPref();
   }
+
+  _initPref() async => _pref = await SharedPreferences.getInstance();
 
   @override
   void didUpdateWidget(Backdrop old) {
@@ -275,10 +282,13 @@ class _BackdropState extends State<Backdrop>
             semanticLabel: 'cart',
           ),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-            );
+            String token = _pref.get("TOKEN");
+            if (token.isNotEmpty)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => new AddToCartPage(token: token,)),
+              );
           },
         ),
       ],

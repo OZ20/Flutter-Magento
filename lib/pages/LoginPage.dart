@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () => AuthToken(
                             username: _usernameController.text,
                             password: _passwordController.text)
-                        .getAdminToken()
+                        .getCustomerToken()
                         .then(_handleLogin)),
               ],
             ),

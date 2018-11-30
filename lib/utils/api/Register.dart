@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+const baseUrl = "http://magento.jomsoft.com/rest";
+
 class RegisterCustomer {
 
   RegisterCustomer(this.fName, this.lName, this.email, this.password);
@@ -13,7 +15,7 @@ class RegisterCustomer {
 
   Future registerCustomer()async{
     var response = await http.post(
-        "http://magento.jomsoft.com/rest/V1/customers", headers: {
+        "$baseUrl/V1/customers", headers: {
       "Content-Type": "application/json"
     }, body: {
       "customer": {
@@ -24,6 +26,16 @@ class RegisterCustomer {
       "password": password
     });
 
+    return jsonDecode(response.body);
+  }
+
+  Future checkIsEmailAvailable()async{
+    var response = await http.post("$baseUrl/V1/customers/isEmailAvailable",headers: {
+      "Content-Type": "application/json"
+    }, body: {
+
+    });
+    
     return jsonDecode(response.body);
   }
 

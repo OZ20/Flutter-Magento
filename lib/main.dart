@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:magentorx/pages/AddToCardPage.dart';
 import 'package:magentorx/pages/AppPage.dart';
 
 import 'package:magentorx/pages/HomePage.dart';
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
+      title: 'JShop',
       theme: AppTheme.getTheme(),
       home: new AppPage(),
       routes: <String,WidgetBuilder>{
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         "/home" : (context) => new HomePage(),
         "/app" : (context) =>  new AppPage(),
         "/detail" : (context) => new ProductDetailPage(),
+        "/cart" : (context) => new AddToCartPage(),
       },
     );
   }
