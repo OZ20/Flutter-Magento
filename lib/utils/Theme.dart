@@ -72,8 +72,8 @@ class Colors {
   static const Color loginGradientStart = const Color(0xFFfbab66);
   static const Color loginGradientEnd = const Color(0xFFf7418c);
 
-  static const primaryGradient = const LinearGradient(
-    colors: const [loginGradientStart, loginGradientEnd],
+  static final primaryGradient =  LinearGradient(
+    colors:  [kColorBlue, kColorBlue900],
     stops: const [0.0, 1.0],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

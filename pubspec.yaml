@@ -27,6 +27,7 @@ dependencies:
   shrine_images: any
   json_annotation: any
   cached_network_image: any
+  font_awesome_flutter: any
 
 
 dev_dependencies:
@@ -52,6 +53,18 @@ flutter:
         - asset: fonts/Rubik-Regular.ttf
         - asset: fonts/Rubik-Medium.ttf
           weight: 500
+
+    - family: WorkSansSemiBold
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-Semibold.ttf
+
+    - family: WorkSansBold
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-Bold.ttf
+
+    - family: WorkSansMedium
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-Medium.ttf
 
   uses-material-design: true
   assets:
