@@ -1,23 +1,24 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 
 const baseUrl = "http://magento.jomsoft.com/rest";
 
 class RegisterCustomer {
-
-  RegisterCustomer(this.fName, this.lName, this.email, this.password);
+  RegisterCustomer(
+      { this.fName,
+       this.lName,
+       this.email,
+       this.password});
 
   final fName;
   final lName;
   final email;
   final password;
 
-  Future registerCustomer()async{
-    var response = await http.post(
-        "$baseUrl/V1/customers", headers: {
-      "Content-Type": "application/json"
-    }, body: {
+  Future<Map<String, dynamic>> registerCustomer() async {
+    var body = jsonEncode({
       "customer": {
         "email": email,
         "firstname": fName,
@@ -25,18 +26,29 @@ class RegisterCustomer {
       },
       "password": password
     });
+    var response = await http.post("$baseUrl/V1/customers", headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    }, body: body);
 
-    return jsonDecode(response.body);
+    return {
+      "statuscode": response.statusCode,
+      "response": json.decode(response.body)
+    };
   }
 
-  Future checkIsEmailAvailable()async{
-    var response = await http.post("$baseUrl/V1/customers/isEmailAvailable",headers: {
-      "Content-Type": "application/json"
+  Future<Map<String, dynamic>> checkIsEmailAvailable() async {
+    var response =
+        await http.post("$baseUrl/V1/customers/isEmailAvailable", headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
     }, body: {
+          "email":email
+        });
 
-    });
-    
-    return jsonDecode(response.body);
+    return {
+      "statuscode": response.statusCode,
+      "response": json.decode(response.body)
+    };
   }
-
 }

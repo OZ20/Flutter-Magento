@@ -8,7 +8,7 @@ class AuthToken {
   final username;
   final password;
 
-  Future<Map> getAdminToken() async {
+  Future<Map<String,dynamic>> getAdminToken() async {
     print("Username: $username  ||  Password: $password");
     var response = await http.post(
         "http://magento.jomsoft.com/rest/default/V1/integration/admin/token",
@@ -21,7 +21,7 @@ class AuthToken {
       return {"statuscode": response.statusCode, "response": json.decode(response.body)};
   }
 
-  Future<Map> getCustomerToken() async {
+  Future<Map<String,dynamic>> getCustomerToken() async {
     print("Username: $username  ||  Password: $password");
     var response = await http.post(
         "http://magento.jomsoft.com/rest/default/V1/integration/customer/token",

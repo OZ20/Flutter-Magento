@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:magentorx/utils/api/Register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:magentorx/utils/api/AuthToken.dart';
 import 'package:magentorx/utils/colour/colors.dart';
@@ -27,7 +28,8 @@ class _LoginPageState extends State<LoginPage>
 
   final FocusNode myFocusNodePassword = FocusNode();
   final FocusNode myFocusNodeEmail = FocusNode();
-  final FocusNode myFocusNodeName = FocusNode();
+  final FocusNode myFocusNodeFirstName = FocusNode();
+  final FocusNode myFocusNodeLastName = FocusNode();
 
   TextEditingController loginEmailController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
@@ -37,7 +39,8 @@ class _LoginPageState extends State<LoginPage>
   bool _obscureTextSignupConfirm = true;
 
   TextEditingController signupEmailController = new TextEditingController();
-  TextEditingController signupNameController = new TextEditingController();
+  TextEditingController signupFirstNameController = new TextEditingController();
+  TextEditingController signupLastNameController = new TextEditingController();
   TextEditingController signupPasswordController = new TextEditingController();
   TextEditingController signupConfirmPasswordController =
       new TextEditingController();
@@ -63,10 +66,7 @@ class _LoginPageState extends State<LoginPage>
                 : 775.0,
             decoration: new BoxDecoration(
               gradient: new LinearGradient(
-                  colors: [
-                    kColorBlue,
-                    kColorBlue900
-                  ],
+                  colors: [kColorBlue, kColorBlue900],
                   begin: const FractionalOffset(0.0, 0.0),
                   end: const FractionalOffset(1.0, 1.0),
                   stops: [0.0, 1.0],
@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage>
   void dispose() {
     myFocusNodePassword.dispose();
     myFocusNodeEmail.dispose();
-    myFocusNodeName.dispose();
+    myFocusNodeFirstName.dispose();
     _pageController?.dispose();
     super.dispose();
   }
@@ -152,21 +152,36 @@ class _LoginPageState extends State<LoginPage>
     _pageController = PageController();
   }
 
-  void showInSnackBar(String value) {
+  void showInSnackBar(Map<String, dynamic> value) {
     FocusScope.of(context).requestFocus(new FocusNode());
     _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "WorkSansSemiBold"),
-      ),
-      backgroundColor: Colors.blue.withOpacity(0.4),
-      duration: Duration(seconds: 3),
-    ));
+    print("TOKEN: ${value["response"]}");
+    if(value["statuscode"] == 200)
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(
+          "Success",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0,
+              fontFamily: "WorkSansSemiBold"),
+        ),
+        backgroundColor: Colors.blue.withOpacity(0.4),
+        duration: Duration(seconds: 1),
+      )).closed.then((reason) => Navigator.pop(context));
+    else
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(
+          "Wrong password or email",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0,
+              fontFamily: "WorkSansSemiBold"),
+        ),
+        backgroundColor: Colors.blue,
+        duration: Duration(seconds: 3),
+      ));
   }
 
   Widget _buildMenuBar(BuildContext context) {
@@ -319,32 +334,34 @@ class _LoginPageState extends State<LoginPage>
                     ),
                   ],
                   gradient: new LinearGradient(
-                      colors: [
-                        kColorBlue900.withOpacity(0.8),
-                        kColorBlue
-                      ],
+                      colors: [kColorBlue900.withOpacity(0.8), kColorBlue],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
                       stops: [0.0, 1.0],
                       tileMode: TileMode.clamp),
                 ),
                 child: MaterialButton(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.white.withOpacity(0.2),
-                    //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
-                      child: Text(
-                        "LOGIN",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
-                      ),
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.white.withOpacity(0.2),
+                  //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 42.0),
+                    child: Text(
+                      "LOGIN",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25.0,
+                          fontFamily: "WorkSansBold"),
                     ),
-                    onPressed: () => AuthToken(username: loginEmailController, password: loginPasswordController).getCustomerToken().then(showInSnackBar),
-              ),
+                  ),
+                  onPressed: () => AuthToken(
+                          username: loginEmailController.text,
+                          password: loginPasswordController.text)
+                      .getCustomerToken()
+                      .then(showInSnackBar),
+                ),
+              )
             ],
           ),
           Padding(
@@ -414,7 +431,7 @@ class _LoginPageState extends State<LoginPage>
               Padding(
                 padding: EdgeInsets.only(top: 10.0, right: 40.0),
                 child: GestureDetector(
-                  onTap: () => showInSnackBar("Facebook button pressed"),
+                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: new BoxDecoration(
@@ -431,7 +448,7 @@ class _LoginPageState extends State<LoginPage>
               Padding(
                 padding: EdgeInsets.only(top: 10.0),
                 child: GestureDetector(
-                  onTap: () => showInSnackBar("Google button pressed"),
+                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: new BoxDecoration(
@@ -469,15 +486,15 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: Container(
                   width: 300.0,
-                  height: 360.0,
+                  height: 440.0,
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeName,
-                          controller: signupNameController,
+                          focusNode: myFocusNodeFirstName,
+                          controller: signupFirstNameController,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
@@ -490,7 +507,36 @@ class _LoginPageState extends State<LoginPage>
                               FontAwesomeIcons.user,
                               color: Colors.black,
                             ),
-                            hintText: "Name",
+                            hintText: "First Name",
+                            hintStyle: TextStyle(
+                                fontFamily: "WorkSansSemiBold", fontSize: 16.0),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 250.0,
+                        height: 1.0,
+                        color: Colors.grey[400],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        child: TextField(
+                          focusNode: myFocusNodeLastName,
+                          controller: signupLastNameController,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          style: TextStyle(
+                              fontFamily: "WorkSansSemiBold",
+                              fontSize: 16.0,
+                              color: Colors.black),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              FontAwesomeIcons.user,
+                              color: Colors.black,
+                            ),
+                            hintText: "Last Name",
                             hintStyle: TextStyle(
                                 fontFamily: "WorkSansSemiBold", fontSize: 16.0),
                           ),
@@ -600,7 +646,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 340.0),
+                margin: EdgeInsets.only(top: 420.0),
                 decoration: new BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
@@ -616,32 +662,42 @@ class _LoginPageState extends State<LoginPage>
                     ),
                   ],
                   gradient: new LinearGradient(
-                      colors: [
-                        kColorBlue900.withOpacity(0.8),
-                        kColorBlue
-                      ],
+                      colors: [kColorBlue900.withOpacity(0.8), kColorBlue],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
                       stops: [0.0, 1.0],
                       tileMode: TileMode.clamp),
                 ),
                 child: MaterialButton(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.white.withOpacity(0.2),
-                    //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
-                      child: Text(
-                        "SIGN UP",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
-                      ),
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.white.withOpacity(0.2),
+                  //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 42.0),
+                    child: Text(
+                      "SIGN UP",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25.0,
+                          fontFamily: "WorkSansBold"),
                     ),
-                    onPressed: () => showInSnackBar("SignUp button pressed")),
-              ),
+                  ),
+                  onPressed: () => RegisterCustomer(
+                          fName: signupFirstNameController.text,
+                          lName: signupLastNameController.text,
+                          email: signupEmailController.text,
+                          password: signupPasswordController.text)
+                      .registerCustomer()
+                      .then((res){
+                        print(res["statuscode"]);
+                        if(res["statuscode"] == 200)
+                          AuthToken(username: signupEmailController.text,password: signupPasswordController.text).getCustomerToken().then(showInSnackBar);
+                        else
+                          _scaffoldKey.currentState.showSnackBar((SnackBar(content: Text("Failed to register account",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),backgroundColor: Colors.blue,)));
+                  }),
+                ),
+              )
             ],
           ),
         ],
