@@ -5,6 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:magentorx/model/Product.dart';
 import 'package:magentorx/model/ProductDetail.dart';
+import 'package:magentorx/utils/api/AddToCart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const imageUri = "http://magento.jomsoft.com/pub/media/catalog/product";
 
@@ -36,6 +38,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
       attribute.attributeCode:attribute.value
     }).toList().forEach((data) => _product.addAll(data));
     productDetail = ProductDetail.fromMap(_product);
+
   }
 
 
@@ -412,7 +415,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
           Flexible(
             flex: 2,
             child: RaisedButton(
-              onPressed: () {},
+              onPressed: () => AddToCart().createCart().then((data) => AddToCart().addToCart(sku: product.sku, qty: 1).then((data) => print(data))),
               color: Colors.blue,
               child: Center(
                 child: Row(

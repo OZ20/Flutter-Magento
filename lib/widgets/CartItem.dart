@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:magentorx/model/CartItem.dart';
 import 'package:magentorx/widgets/SwipeWidget.dart';
 
-class CartItem extends StatelessWidget {
-  final title;
-  final Key _key = Key("dismiss");
+class CartItemWidget extends StatelessWidget {
+  final Items item;
 
-  CartItem(this.title);
+
+  CartItemWidget(this.item);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class CartItem extends StatelessWidget {
           child: new Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Center(child: new Text(title))
+              Center(child: new Text(item.name))
             ],
           ),
         ),

@@ -9,7 +9,6 @@ import 'package:magentorx/utils/colour/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:magentorx/utils/theme.dart' as Theme;
 import 'package:magentorx/utils/supplemental//bubble_indication_painter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,6 +29,8 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeFirstName = FocusNode();
   final FocusNode myFocusNodeLastName = FocusNode();
+
+  Future<SharedPreferences> _pref = SharedPreferences.getInstance();
 
   TextEditingController loginEmailController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
@@ -152,24 +153,32 @@ class _LoginPageState extends State<LoginPage>
     _pageController = PageController();
   }
 
-  void showInSnackBar(Map<String, dynamic> value) {
+  void showInSnackBar(Map<String, dynamic> value)async{
     FocusScope.of(context).requestFocus(new FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
     print("TOKEN: ${value["response"]}");
-    if(value["statuscode"] == 200)
-      _scaffoldKey.currentState.showSnackBar(new SnackBar(
-        content: new Text(
-          "Success",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 16.0,
-              fontFamily: "WorkSansSemiBold"),
-        ),
-        backgroundColor: Colors.blue.withOpacity(0.4),
-        duration: Duration(seconds: 1),
-      )).closed.then((reason) => Navigator.pop(context));
-    else
+    if (value["statuscode"] == 200) {
+      _scaffoldKey.currentState?.removeCurrentSnackBar();
+      _scaffoldKey.currentState
+          .showSnackBar(new SnackBar(
+            content: new Text(
+              "Success",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontFamily: "WorkSansSemiBold"),
+            ),
+            backgroundColor: Colors.blue.withOpacity(0.4),
+            duration: Duration(milliseconds: 500),
+          ))
+          .closed
+          .then((reason) {
+        _pref
+            .then((pref) => pref.setString("TOKEN", value["response"]))
+            .whenComplete(() => Navigator.pop(context));
+      });
+    } else {
+      _scaffoldKey.currentState?.removeCurrentSnackBar();
       _scaffoldKey.currentState.showSnackBar(new SnackBar(
         content: new Text(
           "Wrong password or email",
@@ -182,6 +191,20 @@ class _LoginPageState extends State<LoginPage>
         backgroundColor: Colors.blue,
         duration: Duration(seconds: 3),
       ));
+    }
+  }
+
+  SnackBar _loadingSnackBar(){
+    return SnackBar(content: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text("Signing In"),
+        SizedBox(width: 20.0,),
+        CircularProgressIndicator(),
+      ],
+    ),
+      backgroundColor: Colors.blue.withOpacity(0.4),
+    );
   }
 
   Widget _buildMenuBar(BuildContext context) {
@@ -355,11 +378,14 @@ class _LoginPageState extends State<LoginPage>
                           fontFamily: "WorkSansBold"),
                     ),
                   ),
-                  onPressed: () => AuthToken(
-                          username: loginEmailController.text,
-                          password: loginPasswordController.text)
-                      .getCustomerToken()
-                      .then(showInSnackBar),
+                  onPressed: () {
+                    _scaffoldKey.currentState.showSnackBar(_loadingSnackBar());
+                    AuthToken(
+                        username: loginEmailController.text,
+                        password: loginPasswordController.text)
+                        .getCustomerToken()
+                        .then(showInSnackBar);
+                  },
                 ),
               )
             ],
@@ -683,19 +709,33 @@ class _LoginPageState extends State<LoginPage>
                           fontFamily: "WorkSansBold"),
                     ),
                   ),
-                  onPressed: () => RegisterCustomer(
-                          fName: signupFirstNameController.text,
-                          lName: signupLastNameController.text,
-                          email: signupEmailController.text,
-                          password: signupPasswordController.text)
-                      .registerCustomer()
-                      .then((res){
-                        print(res["statuscode"]);
-                        if(res["statuscode"] == 200)
-                          AuthToken(username: signupEmailController.text,password: signupPasswordController.text).getCustomerToken().then(showInSnackBar);
-                        else
-                          _scaffoldKey.currentState.showSnackBar((SnackBar(content: Text("Failed to register account",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),backgroundColor: Colors.blue,)));
-                  }),
+                  onPressed: () {
+                    _scaffoldKey.currentState.showSnackBar(_loadingSnackBar());
+                    RegisterCustomer(
+                        fName: signupFirstNameController.text,
+                        lName: signupLastNameController.text,
+                        email: signupEmailController.text,
+                        password: signupPasswordController.text)
+                        .registerCustomer()
+                        .then((res) {
+                      print(res["statuscode"]);
+                      if (res["statuscode"] == 200)
+                        AuthToken(
+                            username: signupEmailController.text,
+                            password: signupPasswordController.text)
+                            .getCustomerToken()
+                            .then(showInSnackBar);
+                      else
+                        _scaffoldKey.currentState.showSnackBar((SnackBar(
+                          content: Text(
+                            "Failed to register account",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.blue,
+                        )));
+                    });
+                  },
                 ),
               )
             ],

@@ -20,11 +20,12 @@ class AppPage extends StatefulWidget {
 class _AppPageState extends State<AppPage> {
   CategoryModel _currentCategory;
   List<CategoryModel> _categoryList = new List();
-  List<Product> _productList = new List();
   SharedPreferences _pref;
 
   final PublishSubject<List<Product>> _dataStream = new PublishSubject();
   final Data _data = new Data();
+
+  bool _fetching = true;
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _AppPageState extends State<AppPage> {
   }
 
   _getDataStream({category})async{
-    var data = await _data.getProduct(category: category);
+    var data = await _data.getProduct(category: category).whenComplete(() => _fetching = false);
     _dataStream.sink.add(data);
   }
 
@@ -54,10 +55,9 @@ class _AppPageState extends State<AppPage> {
         frontLayer: StreamBuilder(
             stream: _dataStream.stream,
             builder: (context, snapshot) {
-              print(snapshot.connectionState);
-              if (snapshot.connectionState ==  ConnectionState.active &&snapshot.hasData) {
-                return HomePage(product: snapshot.data);
-              } else if(snapshot.connectionState == ConnectionState.waiting) {
+              if (!_fetching && snapshot.hasData) {
+                return HomePage(product: snapshot.data,category: _currentCategory,);
+              } else {
                 return Center(
                   child: Padding(padding: EdgeInsets.symmetric(horizontal:40.0),child: LinearProgressIndicator(),),
                 );
@@ -78,10 +78,11 @@ class _AppPageState extends State<AppPage> {
 
   /// Function to call when a [Category] is tapped.
   void _onCategoryTap(CategoryModel category) {
-    _getDataStream(category: category.id);
     setState(() {
+      _fetching = true;
       _currentCategory = category;
     });
+    _getDataStream(category: category.id);
   }
 
   @override

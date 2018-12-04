@@ -35,7 +35,10 @@ class AsymmetricView extends StatelessWidget {
     /// helpers for creating the index of the product list that will correspond
     /// to the index of the list of columns.
     return List.generate(_listItemCount(products.length), (int index) {
-      double width = .59 * MediaQuery.of(context).size.width;
+      double width = .59 * MediaQuery
+          .of(context)
+          .size
+          .width;
       Widget column;
 //      if (index % 2 == 0) {
 //        /// Even cases
@@ -47,10 +50,10 @@ class AsymmetricView extends StatelessWidget {
 //                : null);
 //        width += 32.0;
 //      } else {
-        /// Odd cases
-        column = OneProductCardColumn(
-          product: products[index],
-        );
+      /// Odd cases
+      column = OneProductCardColumn(
+        product: products[index],
+      );
 //      }
       return Container(
         width: width,
@@ -86,10 +89,10 @@ class AsymmetricView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      shrinkWrap: false,
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.fromLTRB(0.0, 34.0, 16.0, 44.0),
-      children: _buildColumns(context),
-    );
+            shrinkWrap: false,
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.fromLTRB(0.0, 34.0, 16.0, 44.0),
+            children: _buildColumns(context),
+          );
   }
 }

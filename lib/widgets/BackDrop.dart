@@ -14,7 +14,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:magentorx/model/Category.dart';
-import 'package:magentorx/pages/AddToCardPage.dart';
 import 'package:meta/meta.dart';
 import 'package:magentorx/pages/LoginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,7 +75,6 @@ class _BackdropTitle extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     final Animation<double> animation = this.listenable;
-
     return Row(children: <Widget>[
       // branded icon
       SizedBox(
@@ -179,7 +177,6 @@ class _BackdropState extends State<Backdrop>
     with SingleTickerProviderStateMixin {
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
   AnimationController _controller;
-  SharedPreferences _pref;
 
   @override
   void initState() {
@@ -189,10 +186,8 @@ class _BackdropState extends State<Backdrop>
       value: 1.0,
       vsync: this,
     );
-    _initPref();
   }
 
-  _initPref() async => _pref = await SharedPreferences.getInstance();
 
   @override
   void didUpdateWidget(Backdrop old) {
@@ -274,21 +269,6 @@ class _BackdropState extends State<Backdrop>
               context,
               MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
             );
-          },
-        ),
-        new IconButton(
-          icon: Icon(
-            Icons.shopping_cart,
-            semanticLabel: 'cart',
-          ),
-          onPressed: () {
-            String token = _pref.get("TOKEN");
-            if (token.isNotEmpty)
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => new AddToCartPage(token: token,)),
-              );
           },
         ),
       ],

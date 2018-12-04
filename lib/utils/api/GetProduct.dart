@@ -14,7 +14,6 @@ class GetProduct {
   final baseUri = "http://magento.jomsoft.com/rest";
 
   Future getProduct()async{
-    print(categoryId);
     var uri = categoryId == null?Uri.encodeFull("$baseUri/V1/products?searchCriteria[pageSize]=30"):Uri.encodeFull("$baseUri/V1/products?searchCriteria[filterGroups][0][filters][0][field]=category_id&"
         "searchCriteria[filterGroups][0][filters][0][value]=$categoryId&"
         "searchCriteria[filterGroups][0][filters][0][conditionType]=eq&"
