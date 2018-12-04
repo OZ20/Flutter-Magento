@@ -33,7 +33,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     _productDetail();
   }
 
-  _productDetail(){
+  void _productDetail(){
     product.customAttributes.map((attribute) => <String,dynamic>{
       attribute.attributeCode:attribute.value
     }).toList().forEach((data) => _product.addAll(data));

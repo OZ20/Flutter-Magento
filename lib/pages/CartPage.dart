@@ -18,7 +18,6 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPage extends State<CartPage> {
-
   final PublishSubject<CartItem> _listItem = PublishSubject();
   bool isTokenValid = false;
 
@@ -37,16 +36,21 @@ class _CartPage extends State<CartPage> {
                     height: 600.0,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: snapshot.data.items.length,
-                      itemBuilder: (context, count) =>
-                          Padding(
+                      itemCount: snapshot.data.items?.length ?? 0,
+                      itemBuilder: (context, count) => Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: CartItemWidget(snapshot.data.items[count]),
                           ),
                     ),
                   );
+                else if (!snapshot.hasData)
+                  return Center(
+                      child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40.0),
+                    child: LinearProgressIndicator(),
+                  ));
                 else
-                  return Text("Please login to view cart");
+                  return Center(child: Text("Please login to view cart"));
               },
             )
           ],
@@ -59,15 +63,14 @@ class _CartPage extends State<CartPage> {
   void initState() {
     super.initState();
     getCartItem();
+    _listItem.listen((onData) => isTokenValid = true);
   }
 
   void getCartItem() async {
-    await GetCartItem().getCartItem().then((data) =>
-    data["statuscode"] == 200 ? tokenIsValid(data) : isTokenValid = false);
+    await GetCartItem().getCartItem().then((data) => data["statuscode"] == 200
+        ? _listItem.add(CartItem.fromJson(data["response"]))
+        : isTokenValid = false);
   }
-
-  void tokenIsValid(data) => _listItem.add(
-      CartItem.fromJson(data));
 
   @override
   void dispose() {
