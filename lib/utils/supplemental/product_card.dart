@@ -39,6 +39,7 @@ class ProductCard extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailPage(product: product,))),
       child: Card(
+        elevation: 2.5,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

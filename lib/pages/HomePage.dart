@@ -1,42 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:magentorx/model/CartItem.dart';
 import 'package:magentorx/model/Category.dart';
 import 'package:magentorx/model/Product.dart';
 import 'package:magentorx/pages/CartPage.dart';
+import 'package:magentorx/utils/api/GetCartITem.dart';
+import 'package:magentorx/utils/api/GetProfile.dart';
+import 'package:magentorx/utils/pref/helper.dart';
 import 'package:magentorx/utils/supplemental/asymmetric_view.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-const List<BottomNavigationBarItem> _items = [
-  BottomNavigationBarItem(
-      icon: Icon(
-        Icons.home,
-        color: Colors.blue,
-      ),
-      title: Text(
-        "Home",
-        style: TextStyle(color: Colors.blue),
-      )),
-  BottomNavigationBarItem(
-      icon: Icon(
-        Icons.shopping_cart,
-        color: Colors.blue,
-      ),
-      title: Text(
-        "Cart",
-        style: TextStyle(color: Colors.blue),
-      )),
-  BottomNavigationBarItem(
-      icon: Icon(
-        Icons.account_circle,
-        color: Colors.blue,
-      ),
-      title: Text(
-        "Account",
-        style: TextStyle(color: Colors.blue),
-      ))
-];
+import 'package:magentorx/utils/supplemental/action_item.dart';
 
 class HomePage extends StatefulWidget {
   final CategoryModel category;
@@ -51,45 +22,65 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
-  Future<SharedPreferences> _pref = SharedPreferences.getInstance();
   PageController _controller = PageController();
 
-  String _token;
+  CartItem item = CartItem();
 
   int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _getToken();
-
+    GetProfile().getProfile();
+    GetCartItem().getCartItem();
+    Helper.cartItem
+        .listen((data) => this.mounted ? setState(() => item = data) : print);
   }
-
-  _getToken() => _pref.then((pref) => _token = pref.get("TOKEN"));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: PageView(
-          controller: _controller,
-          children: <Widget>[
-            AsymmetricView(
-              products: widget.product,
-            ),
-            Container(
-              child: CartPage(
-                token: _token,
-              ),
-            ),
-            Container(
-              child: Center(
-                child: Text("Account"),
-              ),
-            )
-          ]),
+      body: PageView(controller: _controller, children: <Widget>[
+        AsymmetricView(
+          products: widget.product,
+        ),
+        Container(
+          child: CartPage(),
+        ),
+        Container(
+          child: Center(
+            child: Text("Account"),
+          ),
+        )
+      ]),
       bottomNavigationBar: BottomNavigationBar(
-        items: _items,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+                color: Colors.blue,
+              ),
+              title: Text(
+                "Home",
+                style: TextStyle(color: Colors.blue),
+              )),
+          BottomNavigationBarItem(
+              icon: getCartButton(context, item),
+              title: Text(
+                "Cart",
+                style: TextStyle(color: Colors.blue),
+              )),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.account_circle,
+                color: Colors.blue,
+              ),
+              title: Text(
+                "Account",
+                style: TextStyle(color: Colors.blue),
+              ))
+        ],
         type: BottomNavigationBarType.shifting,
         currentIndex: _currentIndex,
         onTap: (_changePage),
@@ -107,5 +98,7 @@ class _HomePage extends State<HomePage> {
   @override
   void dispose() {
     super.dispose();
+    print("disposed");
   }
+
 }

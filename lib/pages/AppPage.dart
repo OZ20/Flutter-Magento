@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:magentorx/model/Product.dart';
@@ -10,7 +9,6 @@ import 'package:magentorx/widgets/CategoryMenu.dart';
 import 'package:magentorx/widgets/BackDrop.dart';
 import 'package:magentorx/model/Category.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPage extends StatefulWidget {
   @override
@@ -20,7 +18,6 @@ class AppPage extends StatefulWidget {
 class _AppPageState extends State<AppPage> {
   CategoryModel _currentCategory;
   List<CategoryModel> _categoryList = new List();
-  SharedPreferences _pref;
 
   final PublishSubject<List<Product>> _dataStream = new PublishSubject();
   final Data _data = new Data();
@@ -35,14 +32,14 @@ class _AppPageState extends State<AppPage> {
   }
 
   _gData() async {
-    _pref = await SharedPreferences.getInstance()..get("TOKEN");
     _categoryList =
         await _data.getCategory().whenComplete(() => setState(() {}));
-
   }
 
-  _getDataStream({category})async{
-    var data = await _data.getProduct(category: category).whenComplete(() => _fetching = false);
+  _getDataStream({category}) async {
+    var data = await _data
+        .getProduct(category: category)
+        .whenComplete(() => _fetching = false);
     _dataStream.sink.add(data);
   }
 
@@ -56,10 +53,16 @@ class _AppPageState extends State<AppPage> {
             stream: _dataStream.stream,
             builder: (context, snapshot) {
               if (!_fetching && snapshot.hasData) {
-                return HomePage(product: snapshot.data,category: _currentCategory,);
+                return HomePage(
+                  product: snapshot.data,
+                  category: _currentCategory,
+                );
               } else {
                 return Center(
-                  child: Padding(padding: EdgeInsets.symmetric(horizontal:40.0),child: LinearProgressIndicator(),),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40.0),
+                    child: LinearProgressIndicator(),
+                  ),
                 );
               }
             }),

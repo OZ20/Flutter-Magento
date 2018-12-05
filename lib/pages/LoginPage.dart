@@ -1,8 +1,7 @@
-import 'dart:io';
-import 'dart:async';
+
 
 import 'package:magentorx/utils/api/Register.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:magentorx/utils/pref/helper.dart';
 import 'package:magentorx/utils/api/AuthToken.dart';
 import 'package:magentorx/utils/colour/colors.dart';
 
@@ -30,7 +29,6 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode myFocusNodeFirstName = FocusNode();
   final FocusNode myFocusNodeLastName = FocusNode();
 
-  Future<SharedPreferences> _pref = SharedPreferences.getInstance();
 
   TextEditingController loginEmailController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
@@ -173,9 +171,7 @@ class _LoginPageState extends State<LoginPage>
           ))
           .closed
           .then((reason) {
-        _pref
-            .then((pref) => pref.setString("TOKEN", value["response"]))
-            .whenComplete(() => Navigator.pop(context));
+        Helper.setToken(value["response"]).whenComplete(() => Navigator.pop(context));
       });
     } else {
       _scaffoldKey.currentState?.removeCurrentSnackBar();

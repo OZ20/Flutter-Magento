@@ -1,12 +1,10 @@
-
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:magentorx/model/Product.dart';
 import 'package:magentorx/model/ProductDetail.dart';
-import 'package:magentorx/utils/api/AddToCart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:magentorx/utils/api/CartManagement.dart';
 
 const imageUri = "http://magento.jomsoft.com/pub/media/catalog/product";
 
@@ -22,8 +20,10 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPageState extends State<ProductDetailPage>
     with TickerProviderStateMixin {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
   ProductDetail productDetail;
-  Map<String,dynamic> _product = new Map();
+  Map<String, dynamic> _product = new Map();
   Product product;
 
   @override
@@ -33,18 +33,19 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     _productDetail();
   }
 
-  void _productDetail(){
-    product.customAttributes.map((attribute) => <String,dynamic>{
-      attribute.attributeCode:attribute.value
+  void _productDetail() {
+    product.customAttributes.map((attribute) =>
+    <String, dynamic>{
+      attribute.attributeCode: attribute.value
     }).toList().forEach((data) => _product.addAll(data));
     productDetail = ProductDetail.fromMap(_product);
-
   }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
@@ -71,7 +72,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
   }
 
   _buildProductDetailsPage(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
+    Size screenSize = MediaQuery
+        .of(context)
+        .size;
 
     return ListView(
       children: <Widget>[
@@ -147,9 +150,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   controller: imagesController,
                   children: images.map(
                         (image) {
-                          print(image);
+                      print(image);
                       return CachedNetworkImage(
-                        imageUrl:"$imageUri${productDetail.image}",
+                        imageUrl: "$imageUri${productDetail.image}",
                       );
                     },
                   ).toList(),
@@ -185,7 +188,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
 
   _buildPriceWidgets() {
     var random = Random();
-    int discount = product.price + (random.nextDouble() * product.price).floor();
+    int discount = product.price +
+        (random.nextDouble() * product.price).floor();
     double percentage = ((discount - product.price) / discount) * 100;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -383,7 +387,10 @@ class _ProductDetailPageState extends State<ProductDetailPage>
 
   _buildBottomNavigationBar() {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       height: 50.0,
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -406,7 +413,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     SizedBox(
                       width: 4.0,
                     ),
-                    Text("SAVE",style: TextStyle(color: Colors.white),)
+                    Text("SAVE", style: TextStyle(color: Colors.white),)
                   ],
                 ),
               ),
@@ -415,7 +422,22 @@ class _ProductDetailPageState extends State<ProductDetailPage>
           Flexible(
             flex: 2,
             child: RaisedButton(
-              onPressed: () => AddToCart().createCart().then((data) => AddToCart().addToCart(sku: product.sku, qty: 1).then((data) => print(data))),
+              onPressed: () {
+                _scaffoldKey.currentState.showSnackBar((SnackBar(
+                    backgroundColor: Colors.transparent.withOpacity(0.5),
+                    content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Adding to cart"),
+                    SizedBox(width: 30.0,),
+                    CircularProgressIndicator()
+                  ],
+                ))));
+                return CartManagement().createCart().then((data) =>
+                    CartManagement().addToCart(sku: product.sku, qty: 1).then((
+                        data) => print(data))).whenComplete((() => _scaffoldKey.currentState?.hideCurrentSnackBar()));
+              },
               color: Colors.blue,
               child: Center(
                 child: Row(

@@ -73,18 +73,8 @@ class OneProductCardColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      shrinkWrap: true,
-      reverse: true,
-      physics: ClampingScrollPhysics(),
-      children: <Widget>[
-        SizedBox(
-          height: 40.0,
-        ),
-        ProductCard(
-          product: product,
-        ),
-      ],
+    return ProductCard(
+      product: product,
     );
   }
 }
