@@ -1,5 +1,6 @@
 
 
+import 'package:magentorx/model/Response.dart';
 import 'package:magentorx/utils/api/Register.dart';
 import 'package:magentorx/utils/pref/helper.dart';
 import 'package:magentorx/utils/api/AuthToken.dart';
@@ -151,10 +152,9 @@ class _LoginPageState extends State<LoginPage>
     _pageController = PageController();
   }
 
-  void showInSnackBar(Map<String, dynamic> value)async{
+  void showInSnackBar(Response value)async{
     FocusScope.of(context).requestFocus(new FocusNode());
-    print("TOKEN: ${value["response"]}");
-    if (value["statuscode"] == 200) {
+    if (value.statusCode == 200) {
       _scaffoldKey.currentState?.removeCurrentSnackBar();
       _scaffoldKey.currentState
           .showSnackBar(new SnackBar(
@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage>
           ))
           .closed
           .then((reason) {
-        Helper.setToken(value["response"]).whenComplete(() => Navigator.pop(context));
+        Helper.setToken(value.response).whenComplete(() => Navigator.pop(context));
       });
     } else {
       _scaffoldKey.currentState?.removeCurrentSnackBar();
@@ -714,8 +714,8 @@ class _LoginPageState extends State<LoginPage>
                         password: signupPasswordController.text)
                         .registerCustomer()
                         .then((res) {
-                      print(res["statuscode"]);
-                      if (res["statuscode"] == 200)
+                      print(res.statusCode);
+                      if (res.statusCode == 200)
                         AuthToken(
                             username: signupEmailController.text,
                             password: signupPasswordController.text)

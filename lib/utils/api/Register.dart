@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
+import 'package:magentorx/model/Response.dart';
 
 const baseUrl = "http://magento.jomsoft.com/rest";
 
@@ -17,7 +17,7 @@ class RegisterCustomer {
   final email;
   final password;
 
-  Future<Map<String, dynamic>> registerCustomer() async {
+  Future<Response> registerCustomer() async {
     var body = jsonEncode({
       "customer": {
         "email": email,
@@ -31,13 +31,10 @@ class RegisterCustomer {
       'Accept': 'application/json',
     }, body: body);
 
-    return {
-      "statuscode": response.statusCode,
-      "response": json.decode(response.body)
-    };
+    return Response(statusCode: response.statusCode , response: jsonDecode(response.body));
   }
 
-  Future<Map<String, dynamic>> checkIsEmailAvailable() async {
+  Future<Response> checkIsEmailAvailable() async {
     var response =
         await http.post("$baseUrl/V1/customers/isEmailAvailable", headers: {
       'Content-type': 'application/json',
@@ -46,9 +43,6 @@ class RegisterCustomer {
           "email":email
         });
 
-    return {
-      "statuscode": response.statusCode,
-      "response": json.decode(response.body)
-    };
+    return Response(statusCode: response.statusCode , response: jsonDecode(response.body));
   }
 }

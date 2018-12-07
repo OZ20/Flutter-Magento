@@ -9,30 +9,41 @@ class Customer extends Object{
   final int id;
   @JsonKey(name: "group_id")
   final int groupId;
+  @JsonKey(name: "default_billing")
+  final String defaultBilling;
+  @JsonKey(name: "default_shipping")
+  final String defaultShipping;
   @JsonKey(name: "created_at")
   final String createdAt;
   @JsonKey(name: "updated_at")
   final String updatedAt;
   @JsonKey(name: "created_in")
+  final String createdIn;
+  final String dob;
   final String email;
   @JsonKey(name: "firstname")
   final String fName;
   @JsonKey(name: "lastname")
   final String lName;
+  final String prefix;
+  final int gender;
   @JsonKey(name: "store_id")
   final int storeId;
   @JsonKey(name: "website_id")
   final int websiteId;
   @JsonKey(name: "addresses")
-  final List<Addresses> address;
+  final List<Addresses> addresses;
   @JsonKey(name: "disable_auto_group_change")
   final int disAutoGroupChange;
   @JsonKey(name: "extension_attributes")
   final ExtensionAttributes extAttributes;
 
-  Customer({this.id, this.groupId, this.createdAt, this.updatedAt, this.email,
-      this.fName, this.lName, this.storeId, this.websiteId, this.address,
-      this.disAutoGroupChange, this.extAttributes});
+
+  Customer({this.id, this.groupId, this.defaultBilling, this.defaultShipping,
+      this.createdAt, this.updatedAt, this.createdIn, this.dob, this.email,
+      this.fName, this.lName, this.prefix, this.gender, this.storeId,
+      this.websiteId, this.addresses, this.disAutoGroupChange,
+      this.extAttributes});
 
   factory Customer.fromJson(Map<String,dynamic> json) => _$CustomerFromJson(json);
 

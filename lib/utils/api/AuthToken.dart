@@ -1,4 +1,6 @@
 import 'package:http/http.dart' as http;
+import 'package:magentorx/model/Response.dart';
+import 'package:magentorx/utils/api/GetCartITem.dart';
 import 'package:magentorx/utils/pref/helper.dart';
 import 'dart:convert';
 import 'package:meta/meta.dart';
@@ -10,7 +12,7 @@ class AuthToken {
   final password;
   final baseUri = "http://magento.jomsoft.com/rest";
 
-  Future<Map<String, dynamic>> getAdminToken() async {
+  Future<Response> getAdminToken() async {
     print("Username: $username  ||  Password: $password");
     var response =
         await http.post("$baseUri/default/V1/integration/admin/token",
@@ -20,13 +22,10 @@ class AuthToken {
               "password": password,
             }));
 
-    return {
-      "statuscode": response.statusCode,
-      "response": json.decode(response.body)
-    };
+    return Response(statusCode: response.statusCode , response: jsonDecode(response.body));
   }
 
-  Future<Map<String, dynamic>> getCustomerToken() async {
+  Future<Response> getCustomerToken() async {
     print("Username: $username  ||  Password: $password");
     var response =
         await http.post("$baseUri/default/V1/integration/customer/token",
@@ -38,12 +37,9 @@ class AuthToken {
 
     if(response.statusCode == 200){
       Helper.isTokenValid = true;
-      Helper.setToken(jsonDecode(response.body));
+      Helper.setToken(jsonDecode(response.body)).whenComplete(() => GetCartItem().getCartItem());
     }else
       Helper.isTokenValid = false;
-    return {
-      "statuscode": response.statusCode,
-      "response": json.decode(response.body)
-    };
+    return Response(statusCode: response.statusCode , response: jsonDecode(response.body));
   }
 }

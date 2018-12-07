@@ -38,7 +38,7 @@ class ShippingAssignment extends Object{
 @JsonSerializable(createFactory: true, createToJson: true)
 class Shipping extends Object{
 
-  final Addresses address;
+  final address;
   final String method;
 
   Shipping({this.address, this.method});

@@ -92,7 +92,7 @@ class _OnSlideState extends State<OnSlide> {
       under.add(
           new Container(
             alignment: Alignment.center,
-            color: item.backgroudColor,
+            color: Colors.blue.withOpacity(0.3),
             width: 60.0,
             height: childSize.height,
 

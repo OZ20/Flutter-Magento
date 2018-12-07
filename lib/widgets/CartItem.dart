@@ -6,14 +6,11 @@ import 'package:magentorx/widgets/SwipeWidget.dart';
 class CartItemWidget extends StatelessWidget {
   final Items item;
 
-
   CartItemWidget(this.item);
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery
-        .of(context)
-        .size;
+    var size = MediaQuery.of(context).size;
     return OnSlide(
       child: new Container(
         padding: const EdgeInsets.only(top: 10.0),
@@ -24,19 +21,35 @@ class CartItemWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Center(child: new Text(item.name)),
-              Center(child: new Text(item.quantity.toString()),)
+              SizedBox(width: 20.0,),
+              Center(
+                child: new Text(item.quantity.toString()),
+              ),
+              SizedBox(width: 20.0,),
+              Center(child: Text("${item.quantity * item.price}"),)
             ],
           ),
         ),
       ),
       items: [
-        new ActionItems(icon: new IconButton(
-          icon: new Icon(Icons.delete), onPressed: () {}, color: Colors.red,
-        ), onPress: () => CartManagement().removeFromCart(itemId: item.itemId), backgroudColor: Colors.white),
-        new ActionItems(icon: new IconButton(
-          icon: new Icon(Icons.save), onPressed: () {}, color: Colors.blue,
-        ), onPress: () {}, backgroudColor: Colors.white),
+        new ActionItems(
+            icon: new IconButton(
+              icon: new Icon(Icons.delete),
+              onPressed: () {},
+              color: Colors.red,
+            ),
+            onPress: () => CartManagement().removeFromCart(itemId: item.itemId),
+            backgroudColor: Colors.white),
+        new ActionItems(
+            icon: new IconButton(
+              icon: new Icon(Icons.save),
+              onPressed: () {},
+              color: Colors.blue,
+            ),
+            onPress: () {},
+            backgroudColor: Colors.white),
       ],
     );
   }
 }
+

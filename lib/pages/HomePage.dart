@@ -3,6 +3,7 @@ import 'package:magentorx/model/CartItem.dart';
 import 'package:magentorx/model/Category.dart';
 import 'package:magentorx/model/Product.dart';
 import 'package:magentorx/pages/CartPage.dart';
+import 'package:magentorx/pages/ProfilePage.dart';
 import 'package:magentorx/utils/api/GetCartITem.dart';
 import 'package:magentorx/utils/api/GetProfile.dart';
 import 'package:magentorx/utils/pref/helper.dart';
@@ -24,8 +25,6 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   PageController _controller = PageController();
 
-  CartItem item = CartItem();
-
   int _currentIndex = 0;
 
   @override
@@ -33,8 +32,6 @@ class _HomePage extends State<HomePage> {
     super.initState();
     GetProfile().getProfile();
     GetCartItem().getCartItem();
-    Helper.cartItem
-        .listen((data) => this.mounted ? setState(() => item = data) : print);
   }
 
   @override
@@ -50,7 +47,7 @@ class _HomePage extends State<HomePage> {
         ),
         Container(
           child: Center(
-            child: Text("Account"),
+            child: ProfilePage()
           ),
         )
       ]),
@@ -66,7 +63,7 @@ class _HomePage extends State<HomePage> {
                 style: TextStyle(color: Colors.blue),
               )),
           BottomNavigationBarItem(
-              icon: getCartButton(context, item),
+              icon: getCartButton(context),
               title: Text(
                 "Cart",
                 style: TextStyle(color: Colors.blue),
@@ -98,6 +95,7 @@ class _HomePage extends State<HomePage> {
   @override
   void dispose() {
     super.dispose();
+    Helper.close();
     print("disposed");
   }
 

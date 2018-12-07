@@ -38,11 +38,7 @@ Map<String, dynamic> _$ShippingAssignmentToJson(ShippingAssignment instance) =>
     <String, dynamic>{'shipping': instance.shipping, 'items': instance.items};
 
 Shipping _$ShippingFromJson(Map<String, dynamic> json) {
-  return Shipping(
-      address: json['address'] == null
-          ? null
-          : Addresses.fromJson(json['address'] as Map<String, dynamic>),
-      method: json['method'] as String);
+  return Shipping(address: json['address'], method: json['method'] as String);
 }
 
 Map<String, dynamic> _$ShippingToJson(Shipping instance) =>

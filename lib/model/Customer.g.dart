@@ -10,14 +10,20 @@ Customer _$CustomerFromJson(Map<String, dynamic> json) {
   return Customer(
       id: json['id'] as int,
       groupId: json['group_id'] as int,
+      defaultBilling: json['default_billing'] as String,
+      defaultShipping: json['default_shipping'] as String,
       createdAt: json['created_at'] as String,
       updatedAt: json['updated_at'] as String,
-      email: json['created_in'] as String,
+      createdIn: json['created_in'] as String,
+      dob: json['dob'] as String,
+      email: json['email'] as String,
       fName: json['firstname'] as String,
       lName: json['lastname'] as String,
+      prefix: json['prefix'] as String,
+      gender: json['gender'] as int,
       storeId: json['store_id'] as int,
       websiteId: json['website_id'] as int,
-      address: (json['addresses'] as List)
+      addresses: (json['addresses'] as List)
           ?.map((e) =>
               e == null ? null : Addresses.fromJson(e as Map<String, dynamic>))
           ?.toList(),
@@ -31,14 +37,20 @@ Customer _$CustomerFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$CustomerToJson(Customer instance) => <String, dynamic>{
       'id': instance.id,
       'group_id': instance.groupId,
+      'default_billing': instance.defaultBilling,
+      'default_shipping': instance.defaultShipping,
       'created_at': instance.createdAt,
       'updated_at': instance.updatedAt,
-      'created_in': instance.email,
+      'created_in': instance.createdIn,
+      'dob': instance.dob,
+      'email': instance.email,
       'firstname': instance.fName,
       'lastname': instance.lName,
+      'prefix': instance.prefix,
+      'gender': instance.gender,
       'store_id': instance.storeId,
       'website_id': instance.websiteId,
-      'addresses': instance.address,
+      'addresses': instance.addresses,
       'disable_auto_group_change': instance.disAutoGroupChange,
       'extension_attributes': instance.extAttributes
     };

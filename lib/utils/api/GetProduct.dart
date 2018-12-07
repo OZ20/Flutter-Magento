@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
+import 'package:magentorx/model/Response.dart';
 
 class GetProduct {
 
@@ -13,7 +13,7 @@ class GetProduct {
   final categoryId;
   final baseUri = "http://magento.jomsoft.com/rest";
 
-  Future getProduct()async{
+  Future<Response> getProduct()async{
     var uri = categoryId == null?Uri.encodeFull("$baseUri/V1/products?searchCriteria[pageSize]=30"):Uri.encodeFull("$baseUri/V1/products?searchCriteria[filterGroups][0][filters][0][field]=category_id&"
         "searchCriteria[filterGroups][0][filters][0][value]=$categoryId&"
         "searchCriteria[filterGroups][0][filters][0][conditionType]=eq&"
@@ -23,10 +23,10 @@ class GetProduct {
       "Accept" : "application/json",
       "Content-Type" : "application/json"
     },);
-    return jsonDecode(response.body);
+    return Response(statusCode: response.statusCode , response: jsonDecode(response.body));
   }
 
-  Future searchProduct()async{
+  Future<Response> searchProduct()async{
     var response = await http.get("$baseUri/V1/products?searchCriteria[filter_groups][0][filter][0][field]=name&"
         "searchCriteria[filter_groups][0][filter][0][value]=%$query%&"
         "searchCriteria[filter_groups][0][filter][0][condition_type]=like",headers: <String,String>{
@@ -35,18 +35,18 @@ class GetProduct {
       "Content-Type" : "application/json"
     },);
 
-    return response.body;
+    return Response(statusCode: response.statusCode , response: jsonDecode(response.body));
 
   }
 
-  Future getCategories()async{
+  Future<Response> getCategories()async{
     var uri = Uri.encodeFull("$baseUri/V1/categories");
     var response = await http.get(uri,headers: <String,String>{
       "Authorization" : "Bearer $token",
       "Accept" : "application/json",
       "Content-Type" : "application/json"
     },);
-    return jsonDecode(response.body);
+    return Response(statusCode: response.statusCode , response: jsonDecode(response.body));
   }
 
 }
